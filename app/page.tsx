@@ -102,13 +102,13 @@ export default function Home() {
               </motion.span>
 
               {showFilters && (
-                <div 
+                <div ref={dropdownRef}
                   className={clsx(
                     "flex flex-col  rounded shadow-md p-4 absolute top-12 gap-3 z-[9999999] ",
                     theme === "DARK" ? "bg-[#161B22] text-white ":"bg-white"
                   )}
                 >
-                  <div ref={dropdownRef} className="flex flex-row items-center justify-between">
+                  <div  className="flex flex-row items-center justify-between">
                     <span
                       className={clsx(
                         
