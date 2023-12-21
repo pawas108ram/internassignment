@@ -1,113 +1,176 @@
-import Image from 'next/image'
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { groupingFilterType } from "./types/groupingType";
+import { orderingFilterType } from "./types/orderingType";
+import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import { FaAngleDown } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { ThemeType } from "./types/theme";
+import { IoMoonSharp } from "react-icons/io5";
+import { FiSun } from "react-icons/fi";
+import PriorityLayout from "./components/PriorityLayout";
+import StatusLayout from "./components/StatusLayout";
+import UserLayout from "./components/UserLayout";
+import clsx from "clsx";
+import { useThemeContext } from "./context/ThemeContextProvider";
 
 export default function Home() {
+  const [grouping, setGrouping] = useState<groupingFilterType>("PRIORITY");
+  const [ordering, setOrdering] = useState<orderingFilterType>("PRIORITY");
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+  const { theme, setTheme } = useThemeContext();
+  const [tickets, setTickets] = useState<any[] | null>(null);
+  const [users, setUsers] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    if (ordering === "PRIORITY" && tickets?.length) {
+      setTickets((prev) => [...prev!].sort((a, b) => a.priority - b.priority));
+    }
+    if (ordering === "TITLE" && tickets?.length) {
+      setTickets((prev) =>
+        [...prev!].sort((a, b) => a.title.localeCompare(b.title))
+      );
+    }
+  }, [ordering, tickets?.length]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(
+        "https://tfyincvdrafxe7ut2ziwuhe5cm0xvsdu.lambda-url.ap-south-1.on.aws/ticketAndUsers"
+      );
+      const data = await res.json();
+      console.log(data);
+      setTickets(data.tickets);
+      setUsers(data.users);
+    })();
+  }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      {tickets && users ? (
+        <div
+          className={clsx(
+            "bg-gray-200 w-full min-h-screen ",
+            theme === "DARK" && "bg-[#010409] text-white"
+          )}
+        >
+          <div
+            className={clsx(
+              "flex flex-row items-center p-4 shadow justify-between bg-white",
+              theme === "DARK" && "bg-[#161B22]"
+            )}
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            <div
+              className={clsx(
+                "flex flex-row items-center rounded p-2 bg-white shadow-md gap-2 relative  ",
+                theme === "DARK" &&
+                  "bg-[#161B22] border-[#4A4A4A] shadow-[#4A4A4A]"
+              )}
+            >
+              <HiOutlineAdjustmentsHorizontal />
+              <span>Display</span>
+              <motion.span
+                animate={showFilters ? "up" : "down"}
+                variants={{
+                  up: {
+                    rotate: 180,
+                  },
+                  down: {
+                    rotate: 0,
+                  },
+                }}
+                onClick={() => setShowFilters(!showFilters)}
+                className="cursor-pointer"
+              >
+                <FaAngleDown />
+              </motion.span>
+
+              {showFilters && (
+                <div
+                  className={clsx(
+                    "flex flex-col bg-white rounded shadow-md p-4 absolute top-12 gap-3 z-[9999999] ",
+                    theme === "DARK" && "bg-[#161B22] text-white "
+                  )}
+                >
+                  <div className="flex flex-row items-center justify-between">
+                    <span
+                      className={clsx(
+                        "text-black/60",
+                        theme === "DARK" && "text-white/80"
+                      )}
+                    >
+                      Grouping
+                    </span>
+                    <select
+                      name="grouping"
+                      id="grouping"
+                      className={clsx(
+                        "w-28 rounded form-select p-1",
+                        theme === "DARK" && "bg-[#161B22] text-white/80"
+                      )}
+                      onChange={(e: any) => setGrouping(e.currentTarget.value)}
+                      value={grouping}
+                    >
+                      <option value="PRIORITY">Priority</option>
+                      <option value="STATUS">Status</option>
+                      <option value="USER">User</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-row items-center gap-4 justify-between">
+                    <span
+                      className={clsx(
+                        "text-black/60",
+                        theme === "DARK" && "text-white/80"
+                      )}
+                    >
+                      Ordering
+                    </span>
+                    <select
+                      name="ordering"
+                      id="ordering"
+                      className={clsx(
+                        "w-28 rounded form-select p-1",
+                        theme === "DARK" && "bg-[#161B22] text-white/80"
+                      )}
+                      onChange={(e: any) => setOrdering(e.currentTarget.value)}
+                      value={ordering}
+                    >
+                      <option value="PRIORITY">Priority</option>
+                      <option value="TITLE">Title</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() =>
+                setTheme((prev) => (prev === "LIGHT" ? "DARK" : "LIGHT"))
+              }
+            >
+              {theme === "LIGHT" ? <IoMoonSharp /> : <FiSun />}
+            </button>
+          </div>
+
+          {grouping === "PRIORITY" && (
+            <PriorityLayout ticketData={tickets} users={users} />
+          )}
+          {grouping === "STATUS" && (
+            <StatusLayout ticketData={tickets} users={users} />
+          )}
+          {grouping === "USER" && (
+            <UserLayout ticketData={tickets} users={users} />
+          )}
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+      ) : (
+        <div
+          className={clsx(
+            "flex flex-row items-center justify-center bg-gray-200 text-black animate-pulse min-h-screen w-full lg:text-4xl sm:text-lg md:text-2xl font-semibold",
+            theme === "DARK" && "bg-black text-white "
+          )}
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+          Loading....
+        </div>
+      )}
+    </>
+  );
 }
