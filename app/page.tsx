@@ -21,7 +21,7 @@ export default function Home() {
   const { theme, setTheme } = useThemeContext();
   const [tickets, setTickets] = useState<any[] | null>(null);
   const [users, setUsers] = useState<any[] | null>(null);
-  const dropdownRef = useRef();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (ordering === "PRIORITY" && tickets?.length) {
@@ -35,17 +35,19 @@ export default function Home() {
   }, [ordering, tickets?.length]);
 
   useEffect(() => {
-    let handler = (e: any) => {
-      if (!dropdownRef.current?.contains(e.target)) {
+    let handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setShowFilters(false);
       }
-    }
+    };
+
     document.addEventListener("mousedown", handler);
 
     return () => {
       document.removeEventListener("mousedown", handler);
-    }
-  },[dropdownRef])
+    };
+  }, [dropdownRef, setShowFilters]);
+  
 
   useEffect(() => {
     (async () => {
@@ -100,13 +102,13 @@ export default function Home() {
               </motion.span>
 
               {showFilters && (
-                <div ref={dropdownRef}
+                <div 
                   className={clsx(
                     "flex flex-col  rounded shadow-md p-4 absolute top-12 gap-3 z-[9999999] ",
                     theme === "DARK" ? "bg-[#161B22] text-white ":"bg-white"
                   )}
                 >
-                  <div className="flex flex-row items-center justify-between">
+                  <div ref={dropdownRef} className="flex flex-row items-center justify-between">
                     <span
                       className={clsx(
                         
