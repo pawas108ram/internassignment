@@ -18,9 +18,9 @@ const PriorityCard = ({ priorityOption, ticketData,users }: { priorityOption: an
               <div className='flex flex-row items-center gap-1'>
                   <priorityOption.icon as Icon />
                   <span>{priorityOption.label}</span>
-                  <span className={clsx('text-black/40',theme==='DARK' && 'text-white/40')}>{priorityTicketData.length}</span>
+                  <span className={clsx(theme==='DARK' ? 'text-white/40':"'text-black/40'")}>{priorityTicketData.length}</span>
               </div>
-              <div className={clsx('flex flex-row items-center gap-1 text-black/50',theme==="DARK" && 'text-white/40')}>
+              <div className={clsx('flex flex-row items-center gap-1 ',theme==="DARK" ? 'text-white/40':"text-black/50")}>
                   <FaPlus size={12} />
                   <HiDotsHorizontal size={12} />
               </div>

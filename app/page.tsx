@@ -50,21 +50,21 @@ export default function Home() {
       {tickets && users ? (
         <div
           className={clsx(
-            "bg-gray-200 w-full min-h-screen ",
-            theme === "DARK" && "bg-[#010409] text-white"
+            " w-full min-h-screen ",
+            theme === "DARK" ?"bg-[#010409] text-white":"bg-gray-200 text-black"
           )}
         >
           <div
             className={clsx(
-              "flex flex-row items-center p-4 shadow justify-between bg-white",
-              theme === "DARK" && "bg-[#161B22]"
+              "flex flex-row items-center p-4 shadow justify-between",
+              theme === "DARK" ?"bg-[#161B22]":" bg-white"
             )}
           >
             <div
               className={clsx(
-                "flex flex-row items-center rounded p-2 bg-white shadow-md gap-2 relative  ",
-                theme === "DARK" &&
-                  "bg-[#161B22] border-[#4A4A4A] shadow-[#4A4A4A]"
+                "flex flex-row items-center rounded p-2  gap-2 relative shadow-md  ",
+                theme === "DARK" ?
+                  "bg-[#161B22] border-[#4A4A4A] shadow-[#4A4A4A]":"bg-white "
               )}
             >
               <HiOutlineAdjustmentsHorizontal />
@@ -88,15 +88,15 @@ export default function Home() {
               {showFilters && (
                 <div
                   className={clsx(
-                    "flex flex-col bg-white rounded shadow-md p-4 absolute top-12 gap-3 z-[9999999] ",
-                    theme === "DARK" && "bg-[#161B22] text-white "
+                    "flex flex-col  rounded shadow-md p-4 absolute top-12 gap-3 z-[9999999] ",
+                    theme === "DARK" ? "bg-[#161B22] text-white ":"bg-white"
                   )}
                 >
                   <div className="flex flex-row items-center justify-between">
                     <span
                       className={clsx(
-                        "text-black/60",
-                        theme === "DARK" && "text-white/80"
+                        
+                        theme === "DARK" ? "text-white/80":"text-black/60"
                       )}
                     >
                       Grouping
@@ -143,8 +143,10 @@ export default function Home() {
               )}
             </div>
             <button
-              onClick={() =>
-                setTheme((prev) => (prev === "LIGHT" ? "DARK" : "LIGHT"))
+              onClick={() => {
+                setTheme((prev) => (prev === "LIGHT" ? prev = "DARK" : prev = "LIGHT"))
+                console.log(theme)
+              }
               }
             >
               {theme === "LIGHT" ? <IoMoonSharp /> : <FiSun />}

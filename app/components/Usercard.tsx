@@ -22,9 +22,9 @@ const Usercard = ({ user, ticketData }: { user: any, ticketData: any[] }) => {
                   <span className={clsx('p-1 rounded-full absolute -bottom-0.5 -right-0.5', user.available ? 'bg-yellow-500' : 'bg-gray-500')}></span>
               </span>}
                   <span>{user.name}</span>
-                  <span className={clsx('text-black/40',theme==='DARK' && 'text-white/40')}>{userTicketData.length}</span>
+                  <span className={clsx(theme==='DARK' ? 'text-white/40':"text-black/40")}>{userTicketData.length}</span>
               </div>
-              <div className={clsx('flex flex-row items-center gap-1 text-black/50',theme==="DARK" && 'text-white/40')}>
+              <div className={clsx('flex flex-row items-center gap-1',theme==="DARK" ? 'text-white/40':"text-black/50")}>
                   <FaPlus size={12} />
                   <HiDotsHorizontal size={12} />
               </div>

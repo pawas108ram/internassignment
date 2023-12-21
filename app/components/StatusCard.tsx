@@ -7,6 +7,7 @@ import { useThemeContext } from '../context/ThemeContextProvider'
 
 const StatusCard = ({ statusOption, ticketData, users }: { statusOption: any, ticketData: any[], users: any[] }) => {
     const [statusTicketData, setStatusTicketData] = useState<any[]>([])
+    const Icon=statusOption.icon;
     useEffect(() => {
         setStatusTicketData(ticketData.filter((ticket) => ticket.status === statusOption.value))
     }, [ticketData, statusOption.value])
@@ -15,11 +16,11 @@ const StatusCard = ({ statusOption, ticketData, users }: { statusOption: any, ti
       <div className='flex flex-col gap-3 col-span-1'>
            <div className='flex flex-row items-center justify-between '>
               <div className='flex flex-row items-center gap-1'>
-                  <statusOption.icon as Icon />
+                  <Icon />
                   <span>{statusOption.label}</span>
-                  <span className={clsx('text-black/40',theme==='DARK' && 'text-white/40')}>{statusTicketData.length}</span>
+                  <span className={clsx(theme==='DARK' ? 'text-white/40':"text-black/40")}>{statusTicketData.length}</span>
               </div>
-              <div className={clsx('flex flex-row items-center gap-1 text-black/50',theme==="DARK" && 'text-white/40')}>
+              <div className={clsx('flex flex-row items-center gap-1 ',theme==="DARK" ? 'text-white/40':"text-black/50")}>
                   <FaPlus size={12} />
                   <HiDotsHorizontal size={12} />
               </div>

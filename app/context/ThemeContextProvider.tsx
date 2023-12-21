@@ -1,16 +1,22 @@
+
 'use client'
-import React, { createContext, useContext, useState, ReactNode } from "react";
+// ThemeContextProvider.tsx
+import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
 import { ThemeType } from "../types/theme";
 
 interface ThemeContextProps {
   theme: ThemeType;
-  setTheme: React.Dispatch<React.SetStateAction<ThemeType>>;
+  setTheme: Dispatch<SetStateAction<ThemeType>>;
 }
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export const ThemeContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<ThemeType>('LIGHT');
+
+
+
+ 
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
@@ -19,7 +25,7 @@ export const ThemeContextProvider: React.FC<{ children: ReactNode }> = ({ childr
   );
 };
 
-export const useThemeContext = () => {
+export const useThemeContext = (): ThemeContextProps => {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error("useThemeContext must be used within a ThemeContextProvider");
