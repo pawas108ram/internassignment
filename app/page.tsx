@@ -21,6 +21,7 @@ export default function Home() {
   const { theme, setTheme } = useThemeContext();
   const [tickets, setTickets] = useState<any[] | null>(null);
   const [users, setUsers] = useState<any[] | null>(null);
+  const dropdownRef = useRef();
 
   useEffect(() => {
     if (ordering === "PRIORITY" && tickets?.length) {
@@ -32,6 +33,19 @@ export default function Home() {
       );
     }
   }, [ordering, tickets?.length]);
+
+  useEffect(() => {
+    let handler = (e: any) => {
+      if (!dropdownRef.current?.contains(e.target)) {
+        setShowFilters(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    }
+  },[dropdownRef])
 
   useEffect(() => {
     (async () => {
@@ -86,7 +100,7 @@ export default function Home() {
               </motion.span>
 
               {showFilters && (
-                <div
+                <div ref={dropdownRef}
                   className={clsx(
                     "flex flex-col  rounded shadow-md p-4 absolute top-12 gap-3 z-[9999999] ",
                     theme === "DARK" ? "bg-[#161B22] text-white ":"bg-white"
