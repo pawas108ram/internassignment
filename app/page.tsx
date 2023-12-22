@@ -14,6 +14,7 @@ import UserLayout from "./components/UserLayout";
 import clsx from "clsx";
 import { setLocalTheme, useThemeContext } from "./context/ThemeContextProvider";
 
+
 export default function Home() {
   const [grouping, setGrouping] = useState<groupingFilterType>("PRIORITY");
   const [ordering, setOrdering] = useState<orderingFilterType>("PRIORITY");
@@ -204,7 +205,8 @@ export default function Home() {
             "flex flex-row items-center justify-center animate-pulse min-h-screen w-full lg:text-4xl sm:text-lg md:text-2xl font-semibold",
             theme === "DARK" ?"bg-black text-white ":"bg-gray-200 text-black "
           )}
-        >
+          >
+            
           Loading....
         </div>
       )}

@@ -12,11 +12,13 @@ interface ThemeContextProps {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 const getInitialTheme = (): ThemeType => {
+  if(typeof window === 'undefined') return 'LIGHT';
   const localTheme = localStorage.getItem('theme') as ThemeType;
   return localTheme;
 }
 
 export const setLocalTheme = (theme: ThemeType) => {
+  if(typeof window === 'undefined') return;
   const oldTheme = localStorage.getItem('theme') as ThemeType;
   if (oldTheme === theme) return;
   else {
@@ -25,6 +27,7 @@ export const setLocalTheme = (theme: ThemeType) => {
 }
 
 export const initialiseTheme = () => {
+  if(typeof window === 'undefined') return;
   if (!localStorage.getItem('theme')) {
     localStorage.setItem('theme', 'LIGHT');
   }
