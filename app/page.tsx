@@ -12,7 +12,7 @@ import PriorityLayout from "./components/PriorityLayout";
 import StatusLayout from "./components/StatusLayout";
 import UserLayout from "./components/UserLayout";
 import clsx from "clsx";
-import { useThemeContext } from "./context/ThemeContextProvider";
+import { setLocalTheme, useThemeContext } from "./context/ThemeContextProvider";
 
 export default function Home() {
   const [grouping, setGrouping] = useState<groupingFilterType>("PRIORITY");
@@ -177,6 +177,7 @@ export default function Home() {
             <button
               onClick={() => {
                 setTheme((prev) => (prev === "LIGHT" ? prev = "DARK" : prev = "LIGHT"))
+                setLocalTheme(theme==="LIGHT" ? "DARK" : "LIGHT");
                
               }
               }
@@ -200,8 +201,8 @@ export default function Home() {
       ) : (
         <div
           className={clsx(
-            "flex flex-row items-center justify-center bg-gray-200 text-black animate-pulse min-h-screen w-full lg:text-4xl sm:text-lg md:text-2xl font-semibold",
-            theme === "DARK" && "bg-black text-white "
+            "flex flex-row items-center justify-center animate-pulse min-h-screen w-full lg:text-4xl sm:text-lg md:text-2xl font-semibold",
+            theme === "DARK" ?"bg-black text-white ":"bg-gray-200 text-black "
           )}
         >
           Loading....
