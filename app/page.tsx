@@ -29,7 +29,7 @@ export default function Home() {
 
   useEffect(() => {
     if (ordering === "PRIORITY" && tickets?.length) {
-      setTickets((prev) => [...prev!].sort((a, b) => a.priority - b.priority));
+      setTickets((prev) => [...prev!].sort((a, b) => b.priority - a.priority));
     }
     if (ordering === "TITLE" && tickets?.length) {
       setTickets((prev) =>
