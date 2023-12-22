@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { MouseEventHandler, use, useEffect, useRef, useState } from "react";
 import { groupingFilterType } from "./types/groupingType";
 import { orderingFilterType } from "./types/orderingType";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
@@ -21,7 +21,11 @@ export default function Home() {
   const { theme, setTheme } = useThemeContext();
   const [tickets, setTickets] = useState<any[] | null>(null);
   const [users, setUsers] = useState<any[] | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropDownRef = useRef<HTMLDivElement>(null);
+  const dropwDownRef2 = useRef<HTMLDivElement>(null);
+ 
+  
+
 
   useEffect(() => {
     if (ordering === "PRIORITY" && tickets?.length) {
@@ -35,18 +39,27 @@ export default function Home() {
   }, [ordering, tickets?.length]);
 
   useEffect(() => {
-    let handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+   
+    const handleClickInside = (e: MouseEvent) => {
+      if (dropDownRef.current?.contains(e.target as Node)) {
+        if (!dropwDownRef2.current?.contains(e.target as Node)) {
+          setShowFilters((prev)=>!prev)
+        }
+      } else {
         setShowFilters(false);
       }
-    };
-
-    document.addEventListener("mousedown", handler);
-
+    }
+    document.addEventListener("click", handleClickInside);
     return () => {
-      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("click", handleClickInside);
     };
-  }, [dropdownRef, setShowFilters]);
+  },[dropDownRef])
+
+  
+  
+  
+
+ 
   
 
   useEffect(() => {
@@ -66,7 +79,7 @@ export default function Home() {
       {tickets && users ? (
         <div
           className={clsx(
-            " w-full min-h-screen ",
+            " w-full min-h-screen flex flex-col lg:gap-4 sm:gap-2 md:gap-3 ",
             theme === "DARK" ?"bg-[#010409] text-white":"bg-gray-200 text-black"
           )}
         >
@@ -76,92 +89,95 @@ export default function Home() {
               theme === "DARK" ?"bg-[#161B22]":" bg-white"
             )}
           >
-            <div
-              className={clsx(
-                "flex flex-row items-center rounded p-2  gap-2 relative shadow-md  ",
-                theme === "DARK" ?
-                  "bg-[#161B22] border-[#4A4A4A] shadow-[#4A4A4A]":"bg-white "
-              )}
-            >
-              <HiOutlineAdjustmentsHorizontal />
-              <span>Display</span>
-              <motion.span
-                animate={showFilters ? "up" : "down"}
-                variants={{
-                  up: {
-                    rotate: 180,
-                  },
-                  down: {
-                    rotate: 0,
-                  },
-                }}
-                onClick={() => setShowFilters(!showFilters)}
-                className="cursor-pointer"
-              >
-                <FaAngleDown />
-              </motion.span>
-
+            <div ref={dropDownRef} className="relative ">
+            <button 
+  
+  className={clsx(
+    "flex flex-row items-center rounded p-2 gap-2 relative shadow-md ",
+    theme === "DARK" ? "bg-[#161B22] border-[#4A4A4A] shadow-[#4A4A4A]" : "bg-white"
+  )}
+>
+  <HiOutlineAdjustmentsHorizontal />
+  <span>Display</span>
+  <motion.span
+    animate={showFilters ? "up" : "down"}
+    variants={{
+      up: {
+        rotate: 180,
+      },
+      down: {
+        rotate: 0,
+      },
+    }}
+    className="cursor-pointer"
+  >
+    <FaAngleDown />
+  </motion.span>
+</button>
               {showFilters && (
-                <div ref={dropdownRef}
-                  className={clsx(
-                    "flex flex-col  rounded shadow-md p-4 absolute top-12 gap-3 z-[9999999] ",
-                    theme === "DARK" ? "bg-[#161B22] text-white ":"bg-white"
-                  )}
-                >
-                  <div  className="flex flex-row items-center justify-between">
-                    <span
-                      className={clsx(
-                        
-                        theme === "DARK" ? "text-white/80":"text-black/60"
-                      )}
-                    >
-                      Grouping
-                    </span>
-                    <select
-                      name="grouping"
-                      id="grouping"
-                      className={clsx(
-                        "w-28 rounded form-select p-1",
-                        theme === "DARK" && "bg-[#161B22] text-white/80"
-                      )}
-                      onChange={(e: any) => setGrouping(e.currentTarget.value)}
-                      value={grouping}
-                    >
-                      <option value="PRIORITY">Priority</option>
-                      <option value="STATUS">Status</option>
-                      <option value="USER">User</option>
-                    </select>
+                <div ref={dropwDownRef2}
+                
+                
+                    
+                    className={clsx(
+                      "flex flex-col  rounded shadow-md p-4 absolute top-12 gap-3 z-[9999999]  ",
+                      theme === "DARK" ? "bg-[#161B22] text-white ":"bg-white"
+                    )}
+                  >
+                    <div  className="flex flex-row items-center justify-between">
+                      <span
+                        className={clsx(
+              
+                          theme === "DARK" ? "text-white/80":"text-black/60"
+                        )}
+                      >
+                        Grouping
+                      </span>
+                      <select
+                        name="grouping"
+                        id="grouping"
+                        className={clsx(
+                          "w-28 rounded form-select p-1",
+                          theme === "DARK" && "bg-[#161B22] text-white/80"
+                        )}
+                        onChange={(e: any) => setGrouping(e.currentTarget.value)}
+                        value={grouping}
+                      >
+                        <option value="PRIORITY">Priority</option>
+                        <option value="STATUS">Status</option>
+                        <option value="USER">User</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-row items-center gap-4 justify-between">
+                      <span
+                        className={clsx(
+                          "text-black/60",
+                          theme === "DARK" && "text-white/80"
+                        )}
+                      >
+                        Ordering
+                      </span>
+                      <select
+                        name="ordering"
+                        id="ordering"
+                        className={clsx(
+                          "w-28 rounded form-select p-1",
+                          theme === "DARK" && "bg-[#161B22] text-white/80"
+                        )}
+                        onChange={(e: any) => setOrdering(e.currentTarget.value)}
+                        value={ordering}
+                      >
+                        <option value="PRIORITY">Priority</option>
+                        <option value="TITLE">Title</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className="flex flex-row items-center gap-4 justify-between">
-                    <span
-                      className={clsx(
-                        "text-black/60",
-                        theme === "DARK" && "text-white/80"
-                      )}
-                    >
-                      Ordering
-                    </span>
-                    <select
-                      name="ordering"
-                      id="ordering"
-                      className={clsx(
-                        "w-28 rounded form-select p-1",
-                        theme === "DARK" && "bg-[#161B22] text-white/80"
-                      )}
-                      onChange={(e: any) => setOrdering(e.currentTarget.value)}
-                      value={ordering}
-                    >
-                      <option value="PRIORITY">Priority</option>
-                      <option value="TITLE">Title</option>
-                    </select>
-                  </div>
-                </div>
-              )}
+                )}
             </div>
             <button
               onClick={() => {
                 setTheme((prev) => (prev === "LIGHT" ? prev = "DARK" : prev = "LIGHT"))
-                console.log(theme)
+               
               }
               }
             >
@@ -169,15 +185,17 @@ export default function Home() {
             </button>
           </div>
 
-          {grouping === "PRIORITY" && (
-            <PriorityLayout ticketData={tickets} users={users} />
-          )}
-          {grouping === "STATUS" && (
-            <StatusLayout ticketData={tickets} users={users} />
-          )}
-          {grouping === "USER" && (
-            <UserLayout ticketData={tickets} users={users} />
-          )}
+          
+            {grouping === "PRIORITY" && (
+              <PriorityLayout ticketData={tickets} users={users} />
+            )}
+            {grouping === "STATUS" && (
+              <StatusLayout ticketData={tickets} users={users} />
+            )}
+            {grouping === "USER" && (
+              <UserLayout ticketData={tickets} users={users} />
+            )}
+          
         </div>
       ) : (
         <div

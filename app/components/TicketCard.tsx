@@ -21,7 +21,7 @@ const TicketCard = ({ ticket, user ,showPriority}: { ticket: any, user?: any ,sh
               </span>}
             
           </div>
-          <div className='flex flex-row items-start gap-2'>
+          <div className='flex flex-row items-start gap-2 '>
               <Icon />
               <span className={clsx('font-semibold text-base ',theme==='DARK' ? 'text-white/90':"text-black/80")}>{ticket.title}</span>
             
@@ -30,10 +30,10 @@ const TicketCard = ({ ticket, user ,showPriority}: { ticket: any, user?: any ,sh
               
           </div>
           <div className="flex flex-row items-center gap-2">
-              {showPriority && PriorityIcon &&  <span className='border-gray-200 border-2'><PriorityIcon size={20} /></span>}
+              {showPriority && PriorityIcon && <span className={clsx('border-gray-200 border-2',theme==='DARK'?'bg-[#161B22]':'bg-white')}><PriorityIcon size={20} /></span>}
               <ul className='flex flex-row items-center flex-wrap list-disc list-inside'>
                   {ticket.tag.map((t: string) => (
-                      <li key={t} className='bg-white border-gray-200 border-2 rounded px-1 py-0.5 text-xs text-black/60'>{t}</li>
+                      <li key={t} className={clsx(' border-gray-200 border-2 rounded px-1 py-0.5 text-xs ',theme==='DARK'?'bg-[#161B22] text-white':'bg-white text-black/60')}>{t}</li>
                     ))}
                        </ul>
           </div>
